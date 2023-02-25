@@ -1,31 +1,66 @@
-import dao.CityDao;
-import dao.EmployeeDao;
-import dao.impl.CityDaoImpl;
-import dao.impl.EmployeeDaoImpl;
+import dao.CityDAO;
+import dao.EmployeeDAO;
+import dao.impl.CityDAOimpl;
+import dao.impl.EmployeeDAOImpl;
 import model.City;
 import model.Employee;
-import java.util.ArrayList;
-import java.util.List;
 
+import java.util.List;
+import java.util.Optional;
 
 public class Application {
 
     public static void main(String[] args) {
-        EmployeeDao employeeDao = new EmployeeDaoImpl();
-        CityDao cityDao = new CityDaoImpl();
-        City city = new City("Краснодар");
-        List<Employee> employees = new ArrayList<>();
-        employees.add(new Employee("Anna", "Ivanova", "woman", 24, city));
-        employees.add(new Employee("Anton", "Pestov", "man", 55, city));
-        employees.add(new Employee("Sergey", "Petrosyan", "man", 67, city));
-        employees.add(new Employee("Evgeny", "Ivanov", "man", 25, city));
-        employees.add(new Employee("Semion", "Gotov", "man", 25, city));
-        employees.add(new Employee("Evgeny", "Davydov", "man", 42, city));
-        employees.add(new Employee("Sergey", "Ivanov", "man", 30, city));
-        city.setEmployees(employees);
-        cityDao.add(city);
-        employeeDao.findAll().forEach(System.out::println);
-        cityDao.delete(city);
-        employeeDao.findAll().forEach(System.out::println);
+
+        EmployeeDAO employeeDAO = new EmployeeDAOImpl();
+        CityDAO cityDAO = new CityDAOimpl();
+
+        City tomsk = new City(1, "Tomsk");
+        Employee employeeNew = new Employee("John", "Doe", "male", 57, tomsk);
+
+        Optional<Employee> employeeNewWithId = employeeDAO.create(employeeNew);
+        System.out.println(employeeNewWithId.orElse(employeeNew));
+
+        if (employeeNewWithId.isPresent()) {
+            employeeNewWithId.get().setAge(58);
+            employeeDAO.update(employeeNewWithId.get());
+        }
+
+        Optional<Employee> employeeById = employeeDAO.readById(4);
+        System.out.println(employeeById);
+
+        List<Employee> eList = employeeDAO.readAll();
+        eList.forEach(System.out::println);
+
+        employeeDAO.delete(employeeNew);
+
+        City omsk = new City("Omsk");
+        Optional<City> cityNewWithId = cityDAO.create(omsk);
+        System.out.println(cityNewWithId);
+
+        omsk.setCityName("Kazan");
+        cityDAO.update(omsk);
+
+        Optional<City> cityById = cityDAO.readById(1);
+        System.out.println(cityById);
+
+        List<City> cityList = cityDAO.readAll();
+        cityList.forEach(System.out::println);
+
+        cityDAO.delete(omsk);
+
+        //Проверяю работу полной каскадности
+
+        City moscow = new City(2, "Moscow");
+        Optional<City> moskowWithId = cityDAO.create(moscow);
+        Employee test = new Employee("test", "test", "male", 39, moscow);
+        Optional<Employee> testWithId = employeeDAO.create(test);
+        System.out.println(testWithId);
+        moscow.setCityName("Vasuki");
+        cityDAO.update(moscow);
+        System.out.println(testWithId);
+        cityDAO.delete(moscow);
+
+
     }
 }
