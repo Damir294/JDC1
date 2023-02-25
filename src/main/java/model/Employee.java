@@ -1,98 +1,96 @@
 package model;
-import java.util.Objects;
-
+import javax.persistence.*;
+@Entity
+@Table(name = "employee")
 public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
-    private String firstName;
-    private String lastName;
+    @Column(name = "first_name", nullable = false, length = 50)
+    private String first_name;
+    @Column(name = "last_name", nullable = false, length = 50)
+    private String last_name;
+    @Column(name = "gender", nullable = false, length = 6)
     private String gender;
+    @Column(name = "age")
     private int age;
-    private City cityId;
+    @ManyToOne
+    @JoinColumn(name = "city_id")
+    private City city;
+
 
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, String gender, int age, City cityId) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Employee(String first_name, String last_name, String gender, int age) {
+        this.first_name = first_name;
+        this.last_name = last_name;
         this.gender = gender;
         this.age = age;
-        this.cityId = cityId;
     }
-
-    public Employee(long id, String firstName, String lastName, String gender, int age, City cityId) {
+    public Employee(String first_name, String last_name, String gender, int age, City city) {
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.gender = gender;
+        this.age = age;
+        this.city = city;
+    }
+    public Employee(long id, String first_name, String last_name, String gender, int age, City city) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.first_name = first_name;
+        this.last_name = last_name;
         this.gender = gender;
         this.age = age;
-        this.cityId = cityId;
+        this.city = city;
     }
-
     public long getId() {
         return id;
     }
-
     public void setId(long id) {
         this.id = id;
     }
-
-    public String getFirstName() {
-        return firstName;
+    public String getFirst_name() {
+        return first_name;
     }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirst_name(String first_name) {
+        this.first_name = first_name;
     }
-
-    public String getLastName() {
-        return lastName;
+    public String getLast_name() {
+        return last_name;
     }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
     }
-
     public String getGender() {
         return gender;
     }
-
     public void setGender(String gender) {
         this.gender = gender;
     }
-
     public int getAge() {
         return age;
     }
-
     public void setAge(int age) {
         this.age = age;
     }
-
-    public City getCityId() {
-        return cityId;
+    public City getCity() {
+        return city;
     }
-
-    public void setCityId(City cityId) {
-        this.cityId = cityId;
+    public void setCity(City city) {
+        this.city = city;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Employee employee = (Employee) o;
-        return id == employee.id && age == employee.age && Objects.equals(firstName, employee.firstName) && Objects.equals(lastName, employee.lastName) && Objects.equals(gender, employee.gender) && Objects.equals(cityId, employee.cityId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, firstName, lastName, gender, age, cityId);
-    }
-
     @Override
     public String toString() {
-        return "id = " + id +", firstName = " + firstName +", lastName = " + lastName +", gender = " + gender  +
-                ", age = " + age +", cityId = " + cityId ;
+        return "Employee{" +
+                "id=" + id +
+                ", first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
+                ", gender='" + gender + '\'' +
+                ", age=" + age +
+                ", city=" + city +
+                '}';
     }
 }
+ 20

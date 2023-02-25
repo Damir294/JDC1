@@ -1,72 +1,31 @@
+import dao.CityDao;
 import dao.EmployeeDao;
-import dao.EmployeeDaoImpl;
+import dao.impl.CityDaoImpl;
+import dao.impl.EmployeeDaoImpl;
 import model.City;
 import model.Employee;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.sql.*;
 
 public class Application {
 
-    public static void main(String[] args) throws SQLException {
-
-        // ЗАДАНИЕ 1
-
-
-        final String user = "postgres";
-        final String password = "Rere!090215Cz";
-        final String url = "jdbc:postgresql://localhost:5432/skypro";
-        try (final Connection connection = DriverManager.getConnection(url, user, password);
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM employee WHERE id = (?)")) {
-            statement.setInt(1, 8);
-            final ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                String firstName = "Имя: " + resultSet.getString("first_name");
-                String lastName = "Фамилия: " + resultSet.getString("last_name");
-                String gender = "Пол: " + resultSet.getString("gender");
-                int age = resultSet.getInt(5);
-                long cityId = resultSet.getLong(6);
-
-                System.out.println(firstName);
-                System.out.println(lastName);
-                System.out.println(gender);
-                System.out.println("Возраст: " + age);
-                System.out.println("ID города: " + cityId);
-
-            }
-        }
-
-        System.out.println();
-        // ЗАДАНИЕ 2
-
-        System.out.println();
-
-        EmployeeDao employeeDao=new EmployeeDaoImpl();
+    public static void main(String[] args) {
+        EmployeeDao employeeDao = new EmployeeDaoImpl();
+        CityDao cityDao = new CityDaoImpl();
+        City city = new City("Краснодар");
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee("Anna", "Ivanova", "woman", 24, city));
+        employees.add(new Employee("Anton", "Pestov", "man", 55, city));
+        employees.add(new Employee("Sergey", "Petrosyan", "man", 67, city));
+        employees.add(new Employee("Evgeny", "Ivanov", "man", 25, city));
+        employees.add(new Employee("Semion", "Gotov", "man", 25, city));
+        employees.add(new Employee("Evgeny", "Davydov", "man", 42, city));
+        employees.add(new Employee("Sergey", "Ivanov", "man", 30, city));
+        city.setEmployees(employees);
+        cityDao.add(city);
         employeeDao.findAll().forEach(System.out::println);
-
-        System.out.println();
-        // Создание (добавление) объекта Employee в таблицу.
-        employeeDao.add(new Employee(9,"Anton","Peston","man",55,new City((2),
-                "Санкт-Петербург")));
-
-        System.out.println();
-        // Получение списка всех объектов Employee.
+        cityDao.delete(city);
         employeeDao.findAll().forEach(System.out::println);
-
-        System.out.println();
-        // Получение конкретного объекта по id.
-        System.out.println(employeeDao.readById(8));
-
-        System.out.println();
-        // Изменение конкретного объекта по id.
-        employeeDao.updateEmployeeById(2,"Anna");
-        employeeDao.findAll().forEach(System.out::println);
-
-        System.out.println();
-        // Удаление конкретного объекта по id.
-        employeeDao.deleteById(0);
-        employeeDao.findAll().forEach(System.out::println);
-
-
-
     }
 }
